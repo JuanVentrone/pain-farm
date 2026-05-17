@@ -79,14 +79,57 @@ En producción (`npm run build` + `npm start`), el modo depende de cómo definas
 
 | Script | Descripción |
 |--------|-------------|
-| `npm run dev` | Desarrollo **Main**, escucha en LAN (`0.0.0.0:3000`) |
-| `npm run dev:test` | Desarrollo **Test** (simulación), escucha en LAN |
-| `npm run dev:turbo` / `dev:test:turbo` | Igual con Turbopack (solo PC local compatible) |
+| `npm run dev` | Desarrollo **Main** con **Turbopack**, LAN `0.0.0.0:3000` |
+| `npm run dev:test` | Desarrollo **Test** con **Turbopack**, LAN |
+| `npm run dev:webpack` / `dev:test:webpack` | Sin Turbopack (si falla `wasm bindings` en algún host) |
 | `npm run build` | Build de producción |
-| `npm run start` | Servidor de producción (tras `build`) |
+| `npm run start` | Servidor de producción (tras `build`), LAN |
 | `npm run lint` | ESLint (Next.js) |
 
-URL local: **http://localhost:3000** · En LAN: **http://192.168.1.25:3000** (IP del equipo donde corre Next)
+URL local: **http://localhost:3000** · En LAN: **http://192.168.1.25:3000** (IP del equipo donde corre Next; no uses `http://0.0.0.0:3000` en el navegador).
+
+### No puedo entrar por `192.168.1.25` (Linux / Rita-SangreFria)
+
+En el **mismo servidor** donde corre Next:
+
+```bash
+cd ~/pain-farm
+git pull
+npm install
+npm run dev:test
+```
+
+Espera hasta ver **`✓ Ready`** (la primera compilación puede tardar ~30 s).
+
+Comprueba IP y que escucha en todas las interfaces:
+
+```bash
+hostname -I
+ss -tlnp | grep 3000
+```
+
+Debe aparecer **`0.0.0.0:3000`** (no solo `127.0.0.1:3000`).
+
+Prueba HTTP en el servidor:
+
+```bash
+curl -I http://127.0.0.1:3000
+curl -I http://192.168.1.25:3000
+```
+
+Abre el firewall (Ubuntu/Debian):
+
+```bash
+sudo ufw allow 3000/tcp
+sudo ufw reload
+sudo ufw status
+```
+
+Desde **otro PC** en la misma Wi‑Fi/LAN, en el navegador:
+
+**http://192.168.1.25:3000**
+
+Si `curl` en el servidor funciona pero otro PC no entra → casi siempre es **firewall del router** o el PC cliente no está en la misma subred `192.168.1.x`.
 
 ---
 
@@ -216,15 +259,13 @@ Pain Farm/
 
 ### Error `turbo.createProject` is not supported by the wasm bindings
 
-Aparece al usar **`--turbopack`** en entornos remotos (SSH, WebContainer, algunos Windows sin binarios nativos). **Solución:** usa los scripts **sin** Turbopack:
+Solo en hosts sin binarios nativos (WebContainer, Node 32 bits, etc.). Usa el fallback **sin** Turbopack:
 
 ```bash
-npm run dev:test
+npm run dev:test:webpack
 ```
 
-No uses `dev:test:turbo` en el servidor remoto. En producción no aplica: `npm run build` + `npm run start` no usan Turbopack.
-
-Comprueba también **Node.js 64 bits** (`node -p "process.arch"` → `x64` o `arm64`).
+Los scripts por defecto (`dev`, `dev:test`) usan **Turbopack**. Producción: `npm run build` + `npm run start` (sin Turbopack).
 
 - **Recharts** se carga con `next/dynamic` y `ssr: false` para evitar errores 500 en el render del servidor (`ResponsiveContainer`).
 - En **Test**, la temperatura y parte del consumo son **simulados** cada segundo; la estructura está lista para datos reales.

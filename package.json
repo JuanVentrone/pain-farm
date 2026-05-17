@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=main next dev -H 0.0.0.0",
-    "dev:test": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=test next dev -H 0.0.0.0",
-    "dev:turbo": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=main next dev --turbopack -H 0.0.0.0",
-    "dev:test:turbo": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=test next dev --turbopack -H 0.0.0.0",
+    "dev": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=main HOSTNAME=0.0.0.0 PORT=3000 next dev --turbopack -H 0.0.0.0",
+    "dev:test": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=test HOSTNAME=0.0.0.0 PORT=3000 next dev --turbopack -H 0.0.0.0",
+    "dev:webpack": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=main HOSTNAME=0.0.0.0 PORT=3000 next dev -H 0.0.0.0",
+    "dev:test:webpack": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=test HOSTNAME=0.0.0.0 PORT=3000 next dev -H 0.0.0.0",
     "build": "next build",
-    "start": "next start",
+    "start": "cross-env HOSTNAME=0.0.0.0 PORT=3000 next start -H 0.0.0.0",
     "lint": "next lint"
   },
   "dependencies": {
