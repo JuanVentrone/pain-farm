@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+/*
+  Monokai-inspired industrial dashboard tokens
+  https://raw.githubusercontent.com/monokai/monokai/master/README.md
+*/
+:root {
+  --mono-bg: #272822;
+  --mono-bg-elevated: #3e3d32;
+  --mono-border: #49483e;
+  --mono-fg: #f8f8f2;
+  --mono-muted: #75715e;
+  --mono-green: #a6e22e;
+  --mono-red: #f92672;
+  --mono-orange: #fd971f;
+  --mono-yellow: #e6db74;
+  --mono-cyan: #66d9ef;
+  --mono-purple: #ae81ff;
+  --mono-magenta: #fd5ff0;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--mono-bg);
+  color: var(--mono-fg);
+  min-height: 100dvh;
+}
