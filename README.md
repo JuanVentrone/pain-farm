@@ -86,50 +86,44 @@ En producción (`npm run build` + `npm start`), el modo depende de cómo definas
 | `npm run start` | Servidor de producción (tras `build`), LAN |
 | `npm run lint` | ESLint (Next.js) |
 
-URL local: **http://localhost:3000** · En LAN: **http://192.168.1.25:3000** (IP del equipo donde corre Next; no uses `http://0.0.0.0:3000` en el navegador).
+URL local: **http://localhost:3000** · En LAN: **http://192.168.1.150:3000** (IP del servidor; no uses `http://0.0.0.0:3000` en el navegador).
 
-### No puedo entrar por `192.168.1.25` (Linux / Rita-SangreFria)
+### Servidor Linux (`192.168.1.150`)
 
-En el **mismo servidor** donde corre Next:
+**Importante:** instala dependencias **en el servidor**, no copies `node_modules` desde Windows.
 
 ```bash
-cd ~/pain-farm
+cd /home/server/pain-farm   # o ~/pain-farm
 git pull
+rm -rf node_modules .next
 npm install
 npm run dev:test
 ```
 
-Espera hasta ver **`✓ Ready`** (la primera compilación puede tardar ~30 s).
-
-Comprueba IP y que escucha en todas las interfaces:
+Espera **`✓ Ready`**. Comprueba:
 
 ```bash
-hostname -I
-ss -tlnp | grep 3000
+hostname -I          # debe incluir 192.168.1.150
+ss -tlnp | grep 3000 # debe ser 0.0.0.0:3000
+curl -I http://192.168.1.150:3000
+sudo ufw allow 3000/tcp && sudo ufw reload
 ```
 
-Debe aparecer **`0.0.0.0:3000`** (no solo `127.0.0.1:3000`).
+Desde otro equipo en la LAN: **http://192.168.1.150:3000**
 
-Prueba HTTP en el servidor:
+### Error `Cannot find module '@tailwindcss/oxide-linux-x64-gnu'`
+
+Ocurre si `node_modules` se generó en Windows y se usó en Linux. En el **servidor**:
 
 ```bash
-curl -I http://127.0.0.1:3000
-curl -I http://192.168.1.25:3000
+rm -rf node_modules .next
+npm install
+# si persiste:
+npm install @tailwindcss/oxide-linux-x64-gnu@4.3.0 --save-optional
+npm run dev:test
 ```
 
-Abre el firewall (Ubuntu/Debian):
-
-```bash
-sudo ufw allow 3000/tcp
-sudo ufw reload
-sudo ufw status
-```
-
-Desde **otro PC** en la misma Wi‑Fi/LAN, en el navegador:
-
-**http://192.168.1.25:3000**
-
-Si `curl` en el servidor funciona pero otro PC no entra → casi siempre es **firewall del router** o el PC cliente no está en la misma subred `192.168.1.x`.
+No subas la carpeta `node_modules` a git ni la copies por SCP desde tu PC.
 
 ---
 
@@ -290,4 +284,4 @@ npm run dev:test
 npm run dev
 ```
 
-Abre **http://localhost:3000** y confirma acciones críticas en el modal antes de conmutar equipos reales en modo **Main**.
+En el servidor: **http://192.168.1.150:3000** (modo test: `npm run dev:test`).

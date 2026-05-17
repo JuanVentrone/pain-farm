@@ -17,6 +17,11 @@
     "react-dom": "^19.1.0",
     "recharts": "^2.15.3"
   },
+  "optionalDependencies": {
+    "@tailwindcss/oxide-linux-x64-gnu": "4.3.0",
+    "@tailwindcss/oxide-linux-x64-musl": "4.3.0",
+    "@tailwindcss/oxide-linux-arm64-gnu": "4.3.0"
+  },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
