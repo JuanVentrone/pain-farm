@@ -79,13 +79,14 @@ En producción (`npm run build` + `npm start`), el modo depende de cómo definas
 
 | Script | Descripción |
 |--------|-------------|
-| `npm run dev` | Desarrollo en **Main** (Turbopack, puerto 3000) |
-| `npm run dev:test` | Desarrollo en **Test** (simulación) |
+| `npm run dev` | Desarrollo **Main**, escucha en LAN (`0.0.0.0:3000`) |
+| `npm run dev:test` | Desarrollo **Test** (simulación), escucha en LAN |
+| `npm run dev:turbo` / `dev:test:turbo` | Igual con Turbopack (solo PC local compatible) |
 | `npm run build` | Build de producción |
 | `npm run start` | Servidor de producción (tras `build`) |
 | `npm run lint` | ESLint (Next.js) |
 
-URL local habitual: **http://localhost:3000**
+URL local: **http://localhost:3000** · En LAN: **http://192.168.1.25:3000** (IP del equipo donde corre Next)
 
 ---
 
@@ -212,6 +213,18 @@ Pain Farm/
 ---
 
 ## Notas de desarrollo
+
+### Error `turbo.createProject` is not supported by the wasm bindings
+
+Aparece al usar **`--turbopack`** en entornos remotos (SSH, WebContainer, algunos Windows sin binarios nativos). **Solución:** usa los scripts **sin** Turbopack:
+
+```bash
+npm run dev:test
+```
+
+No uses `dev:test:turbo` en el servidor remoto. En producción no aplica: `npm run build` + `npm run start` no usan Turbopack.
+
+Comprueba también **Node.js 64 bits** (`node -p "process.arch"` → `x64` o `arm64`).
 
 - **Recharts** se carga con `next/dynamic` y `ssr: false` para evitar errores 500 en el render del servidor (`ResponsiveContainer`).
 - En **Test**, la temperatura y parte del consumo son **simulados** cada segundo; la estructura está lista para datos reales.

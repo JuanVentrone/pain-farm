@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=main next dev --turbopack",
-    "dev:test": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=test next dev --turbopack",
+    "dev": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=main next dev -H 0.0.0.0",
+    "dev:test": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=test next dev -H 0.0.0.0",
+    "dev:turbo": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=main next dev --turbopack -H 0.0.0.0",
+    "dev:test:turbo": "cross-env NEXT_PUBLIC_BOOT_RUN_MODE=test next dev --turbopack -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
