@@ -32,9 +32,11 @@ Frontend web para **monitoreo y control** de instalaciones industriales (contact
 
 ## Requisitos previos
 
-- **Node.js** 18+ (recomendado 20+)
+- **Node.js 20+** (obligatorio para Tailwind CSS 4 / `@tailwindcss/oxide`; Node 18 provoca error de binding nativo)
 - **npm** 9+
 - Para **modo Main:** API **Core Swicht V2** en ejecución (por defecto `http://127.0.0.1:8000`)
+
+**Migración / SSH / acceso remoto:** ver [docs/acceso-servidor.md](docs/acceso-servidor.md) (claves SSH, firewall, VPN, PM2).
 
 ---
 
@@ -90,10 +92,15 @@ URL local: **http://localhost:3000** · En LAN: **http://192.168.1.150:3000** (I
 
 ### Servidor Linux (`192.168.1.150`)
 
-**Importante:** instala dependencias **en el servidor**, no copies `node_modules` desde Windows.
+**Importante:** instala dependencias **en el servidor**, no copies `node_modules` desde Windows. Usa **Node 20+** (con nvm si hace falta):
 
 ```bash
-cd /home/server/pain-farm   # o ~/pain-farm
+# Node 20 (una vez por servidor)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh"
+nvm install 20 && nvm alias default 20
+
+cd /home/server/pain-farm
 git pull
 rm -rf node_modules .next
 npm install
@@ -173,6 +180,25 @@ uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 Sin backend en Main verás avisos de conexión y valores **N/A** en métricas; el proxy puede registrar `ECONNREFUSED` en la consola de Next.
+
+### Notificaciones al celular (cambio de contactores)
+
+Las alertas se envían desde **Core Swicht V2** (no desde el frontend), cada vez que C1, C2 o C3 se conmutan.
+
+**ntfy (recomendado):**
+
+1. App [ntfy](https://ntfy.sh/) en el móvil → suscribirse a un tema privado (ej. `pain-farm-migranja`).
+2. En el servidor, en el servicio `core-swicht` o antes de `uvicorn`:
+
+```bash
+export NTFY_TOPIC="pain-farm-migranja"
+```
+
+3. `systemctl --user restart core-swicht.service`
+
+**Telegram:** `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` (ver README de Core Swicht V2).
+
+Detalle completo: repositorio **Core Swicht V2** → sección *Notificaciones al celular* y archivo `.env.example`.
 
 ---
 

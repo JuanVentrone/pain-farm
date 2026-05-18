@@ -1,0 +1,19 @@
+[Unit]
+Description=Pain Farm dashboard (Next.js)
+After=network-online.target core-swicht.service
+Wants=core-swicht.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/server/pain-farm
+Environment=NODE_ENV=production
+Environment=BACKEND_URL=http://127.0.0.1:8000
+Environment=NEXT_PUBLIC_BOOT_RUN_MODE=main
+Environment=HOSTNAME=0.0.0.0
+Environment=PORT=3000
+ExecStart=/bin/bash -lc 'export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"; cd /home/server/pain-farm && npm run start'
+Restart=on-failure
+RestartSec=8
+
+[Install]
+WantedBy=default.target
