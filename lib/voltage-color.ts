@@ -3,8 +3,8 @@
 export type VoltageTone = "optimal" | "caution" | "alert";
 
 export function voltageTone(v: number): VoltageTone {
-  if (v >= 235 && v <= 245) return "optimal";
-  if ((v >= 220 && v < 235) || (v > 245 && v <= 255)) return "caution";
+  if (v >= 220 && v <= 245) return "optimal";
+  if ((v >= 220 && v < 245) || (v > 245 && v <= 255)) return "caution";
   return "alert";
 }
 
